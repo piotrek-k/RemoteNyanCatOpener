@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,13 +14,23 @@ namespace DesktopClient
 
     class Program
     {
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
+
         public static DaneAplikacji DaneAplikacji = new DaneAplikacji();
         public static string command = "";
+        public static bool consoleHidden = false;
 
         static void Main(string[] args)
         {
+            var handle = GetConsoleWindow();
+
             DaneAplikacji da = new DaneAplikacji();
-            var url = "http://localhost:50043/";
+            var url = "http://remotenyancatopener.azurewebsites.net/";
             var writer = Console.Out;
             var hubClient = new HubClient(writer);
             hubClient.RunAsync(url).Wait();
@@ -29,19 +40,36 @@ namespace DesktopClient
             Console.WriteLine("Aby zakonczyc wykonywanie komendy, wpisz 'exit'");
             Console.WriteLine("Dostepne komendy:");
             Console.WriteLine("'chat' - komunikacja z reszta komputerow");
-            Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (musisz byc adminem)");
+            Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (tych ktore zaakcpetuja cie jako admina)");
             Console.WriteLine("'beadmin' - zapytaj innych czy mozesz byc adminem");
             Console.WriteLine("'username' - zmien swoja nazwe");
+            Console.WriteLine("'hide' - ukryj konsole. F3+Escape - wyswietl ja ponownie");
+            Console.WriteLine("'hardcoremode' - wylacz autoryzacje admina, kazdy moze uruchomic ci startexe");
             Console.ResetColor();
 
             //string command = "";
             while (command != "exit")
             {
+                if (Console.ReadKey(true).Key == ConsoleKey.F3 && consoleHidden)
+                {
+                    while (true)
+                    {
+                        if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                        {
+                            ShowWindow(handle, SW_SHOW);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
                 Console.WriteLine("Wpisz komende: ");
                 command = Console.ReadLine();
                 if (command == "chat")
                 {
-                    Console.WriteLine("Wpisz wiadomosc do przeslania");
+                    //Console.WriteLine("Wpisz wiadomosc do przeslania");
 
                     string text;
                     do
@@ -70,6 +98,15 @@ namespace DesktopClient
                     string name = Console.ReadLine();
                     hubClient._hubProxy.Invoke("setNickname", name);
                     Console.WriteLine("Zapytanie wyslane, poczekaj na komunikat z serwera");
+                }
+                else if (command == "hide")
+                {
+                    ShowWindow(handle, SW_HIDE);
+                    consoleHidden = true;
+                }
+                else if(command == "hardcoremode")
+                {
+                    DaneAplikacji.Admin = "admin";
                 }
             }
         }

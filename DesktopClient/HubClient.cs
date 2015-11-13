@@ -35,7 +35,7 @@ namespace DesktopClient
             {
                 //_traceWriter.WriteLine("Uruchamianie " + data[1] + " przez admina " + data[0]);
                 Program.serverMessage("Uruchamianie " + data[1] + " przez admina " + data[0]);
-                if (data[0] == Program.DaneAplikacji.Admin)
+                if (data[0] == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
                 {
                     System.Diagnostics.Process.Start(data[1]);
                 }

@@ -18,12 +18,19 @@ namespace Server
 
         public void openExeEverywhere(string path)
         {
-            Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
+            if (!(path.Contains(@"\") || path.Contains(@"/"))) //zabezpieczenie przed poruszaniem sie po drzewie plikow
+            {
+                Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
+            }
+            else
+            {
+                Clients.Caller.serverResponse(@"Znaki \ i / sa niedozwolone");
+            }
         }
 
         public void setNickname(string name)
         {
-            if (users.Any(x => x.Value == name))
+            if (name != "admin" && users.Any(x => x.Value == name))
             {
                 Clients.Caller.serverResponse("Nazwa uzytkownika jest juz zajeta");
             }
@@ -42,7 +49,7 @@ namespace Server
         public void notifyUserHeBecomeAdmin(string nazwaAdmina)
         {
             var key = users.FirstOrDefault(x => x.Value == nazwaAdmina).Key;
-            if(key != null)
+            if (key != null)
             {
                 Clients.Client(key).youveBecomeAdmin(users[Context.ConnectionId]);
             }
