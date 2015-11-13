@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopClient", "DesktopCli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{827AB769-EFDE-4ECD-BD94-EB95DCA94E2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleAppToOpen", "SampleAppToOpen\SampleAppToOpen.csproj", "{33BE4899-590F-46FC-B2D0-EA1EA581234E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{827AB769-EFDE-4ECD-BD94-EB95DCA94E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{827AB769-EFDE-4ECD-BD94-EB95DCA94E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{827AB769-EFDE-4ECD-BD94-EB95DCA94E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33BE4899-590F-46FC-B2D0-EA1EA581234E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33BE4899-590F-46FC-B2D0-EA1EA581234E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33BE4899-590F-46FC-B2D0-EA1EA581234E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33BE4899-590F-46FC-B2D0-EA1EA581234E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -74,7 +74,7 @@ namespace DesktopClient
                     string text;
                     do
                     {
-                        Console.Write("chat: ");
+                        //Console.Write("chat: ");
                         text = Console.ReadLine();
 
                         hubClient._hubProxy.Invoke("serverMessage", text);

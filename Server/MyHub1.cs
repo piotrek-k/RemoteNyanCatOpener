@@ -30,7 +30,7 @@ namespace Server
 
         public void setNickname(string name)
         {
-            if (name != "admin" && users.Any(x => x.Value == name))
+            if (name == "admin" && users.Any(x => x.Value == name))
             {
                 Clients.Caller.serverResponse("Nazwa uzytkownika jest juz zajeta");
             }
@@ -58,6 +58,7 @@ namespace Server
         public override Task OnConnected()
         {
             users.Add(Context.ConnectionId, "PC");
+            Clients.Client(Context.ConnectionId).serverResponse(users.Count + " uzytkownikow online. Uzywajac tego programu uroczyscie przysiegasz ze knujesz cos niedobrego :]");
 
             return base.OnConnected();
         }
