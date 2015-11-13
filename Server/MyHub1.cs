@@ -66,7 +66,9 @@ namespace Server
         public override Task OnDisconnected(bool stopCalled)
         {
             //stopCalled: true - user closed pc client, false - lost connection
+            string name = users[Context.ConnectionId];
             users.Remove(Context.ConnectionId);
+            Clients.All.serverResponse("Uzytkownik " + name + " rozlaczony. Aktualnie " + users.Count + " komputerow online.");
 
             return base.OnDisconnected(stopCalled);
         }

