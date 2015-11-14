@@ -28,6 +28,11 @@ namespace Server
             }
         }
 
+        public void closeExeEverywhere()
+        {
+            Clients.Others.closeExe(users[Context.ConnectionId]);
+        }
+
         public void setNickname(string name)
         {
             if (name == "admin" && users.Any(x => x.Value == name))

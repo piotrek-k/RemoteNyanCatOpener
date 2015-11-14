@@ -12,10 +12,12 @@ namespace DesktopClient
     {
         private TextWriter _traceWriter;
         public IHubProxy _hubProxy;
+        private System.Diagnostics.Process process;
 
         public HubClient(TextWriter traceWriter)
         {
             _traceWriter = traceWriter;
+            //process = new System.Diagnostics.Process();
         }
 
         public async Task RunAsync(string url)
@@ -37,13 +39,24 @@ namespace DesktopClient
                 if (data[0] == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
                 {
                     Program.serverMessage("Uruchamianie " + data[1] + " przez admina " + data[0]);
-                    System.Diagnostics.Process.Start(data[1]);
+                    process = System.Diagnostics.Process.Start(data[1]);
                 }
                 else
                 {
                     Program.serverMessage(data[0] + " probowal uruchomic plik " + data[1] + ". Nie ma do tego uprawnien.");
                 }
             });
+
+            _hubProxy.On<string>("closeExe", (data) =>
+            {
+                if (data == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
+                {
+                    Program.serverMessage("Zamykanie pliku przez" + data);
+                    process.CloseMainWindow();
+                    process.Close();
+                }
+            });
+
 
             _hubProxy.On<string>("serverResponse", (data) =>
             {

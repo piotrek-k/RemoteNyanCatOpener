@@ -11,6 +11,8 @@
     <input type="text" id="pathOfFileToOpen" class="form-control" placeholder="Nazwa pliku" />
     <button id="openFile" class="btn btn-default">StartExe</button><br />
 
+    <button id="closeFile" class="btn btn-default">CloseExe</button><br />
+
     <button id="askToBeAdmin" class="btn btn-default">Spytaj czy możesz być adminem</button><br />
 
     <input type="text" id="newChatMessage" class="form-control" placeholder="Wpisz wiadomosc" />
@@ -48,6 +50,10 @@
 
                 $("#openFile").click(function () {
                     hub.server.openExeEverywhere("" + $("#pathOfFileToOpen").val());
+                });
+
+                $("#closeFile").click(function () {
+                    hub.server.closeExeEverywhere();
                 });
 
                 $("#changeNickname").click(function () {
