@@ -29,7 +29,27 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2015 - @DateTime.Now.Year</p>
+            @{
+                Random r = new Random(DateTime.Now.Millisecond);
+                var a = r.Next(0, 50);
+                if (a == 2)
+                {
+                    <p><i><font size="1">"When life gives you lemons, make lemonade" ~CJ</font></i></p>
+                }
+                else if (a == 5)
+                {
+                    <p><i><font size="1">"Pierwsza zasada Bezprzewodowego Uruchamiacza Nyan Cata: nie rozmawiamy o Bezprzewodowym Uruchamiaczu Nyan Cata"</font></i></p>
+                }
+                else if (a == 7)
+                {
+                    <p><i><font size="1">"Jeśli kiedykolwiek miałbym raka, nazwałbym go Bezprzewodowym Uruchamiaczem NyanCata" ~ofiara BUNC'a</font></i></p>
+                }
+                else if (a == 10)
+                {
+                    <p><i><font size="1">"To mały krok dla człowieka, ale wielki krok do piekła" ~Armstrong o Brzezprzewodowym Uruchamiaczu Nyan Cata</font></i></p>
+                }
+            }
+            
         </footer>
     </div>
 

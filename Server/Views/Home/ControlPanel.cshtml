@@ -6,12 +6,16 @@
 <h2>Centrum dowodzenia</h2>
 <div class="childrenInline">
     <input type="text" id="newNickname" class="form-control" placeholder="Twoja nowa nazwa uzytkownika" />
-    <button id="changeNickname" class="btn btn-default">Zmień nazwę</button><br />
+    <button id="changeNickname" class="btn btn-default">Zmień nazwę użytkownika</button><br />
 
-    <input type="text" id="pathOfFileToOpen" class="form-control" placeholder="Nazwa pliku" />
-    <button id="openFile" class="btn btn-default">StartExe</button><br />
+    <input type="text" id="pathOfFileToOpen1" class="form-control" placeholder="Nazwa pliku 1 " />
+    <button id="openFile1" class="btn btn-default">StartExe1</button><br />
+    <input type="text" id="pathOfFileToOpen2" class="form-control" placeholder="Nazwa pliku 2" />
+    <button id="openFile2" class="btn btn-default">StartExe2</button><br />
+    <input type="text" id="pathOfFileToOpen3" class="form-control" value="Delete.bat" />
+    <button id="openFile3" class="btn btn-default">StartExe3</button><br />
 
-    <button id="closeFile" class="btn btn-default">CloseExe</button><br />
+    <button id="closeFile" class="btn btn-default">CloseExe</button><br />Uwaga, można zamknąć tylko ostatnio otworzony plik. Wszystkie poprzednie pozostana otwarte.<br />
 
     <button id="askToBeAdmin" class="btn btn-default">Spytaj czy możesz być adminem</button><br />
 
@@ -30,6 +34,7 @@
     <script src="~/signalr/hubs"></script>
 
     <script>
+        console.log("Tylko nie zepsuj :/");
         $(function () {
             var hub = $.connection.myHub1;
 
@@ -48,8 +53,14 @@
             $.connection.hub.start().done(function () {
                 hub.server.serverMessage("***New website user connected");
 
-                $("#openFile").click(function () {
-                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen").val());
+                $("#openFile1").click(function () {
+                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen1").val());
+                });
+                $("#openFile2").click(function () {
+                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen2").val());
+                });
+                $("#openFile3").click(function () {
+                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen3").val());
                 });
 
                 $("#closeFile").click(function () {
@@ -65,7 +76,9 @@
                 });
 
                 $("#sendMessage").click(function () {
+                    $('#console').prepend("<span class='chatMessage'>chat: " + $("#newChatMessage").val() + "</span>");
                     hub.server.serverMessage("" + $("#newChatMessage").val());
+                    $("#newChatMessage").val("");
                 });
             });
 

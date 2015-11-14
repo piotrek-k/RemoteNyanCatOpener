@@ -33,6 +33,7 @@ namespace Server
             Clients.Others.closeExe(users[Context.ConnectionId]);
         }
 
+
         public void setNickname(string name)
         {
             if (name == "admin" && users.Any(x => x.Value == name))
@@ -43,6 +44,10 @@ namespace Server
             {
                 users[Context.ConnectionId] = name;
                 Clients.Caller.serverResponse("Od teraz nazywasz sie " + users[Context.ConnectionId]);
+                if(name == "chuj")
+                {
+                    Clients.Caller.serverResponse("Milej zabawy... chuju :]");
+                }
             }
         }
 
