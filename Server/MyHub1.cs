@@ -57,7 +57,20 @@ namespace Server
 
         public override Task OnConnected()
         {
-            users.Add(Context.ConnectionId, "PC");
+            Random rnd1 = new Random();
+            string newUserName;
+            do
+            {
+                newUserName = "User" + rnd1.Next(0, 1000);
+            }
+            while (users.Any(x => x.Value == newUserName) && users.Count < 999);
+
+            if (users.Count >= 999)
+            {
+                newUserName = "UserX";
+            }
+
+            users.Add(Context.ConnectionId, newUserName);
             Clients.Client(Context.ConnectionId).serverResponse(users.Count + " uzytkownikow online. Uzywajac tego programu uroczyscie przysiegasz ze knujesz cos niedobrego :]");
 
             return base.OnConnected();

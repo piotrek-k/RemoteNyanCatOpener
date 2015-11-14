@@ -27,8 +27,22 @@ namespace DesktopClient
 
         static void Main(string[] args)
         {
+            while (true)
+            {
+                var password = Console.ReadLine();
+                if (password == "tmm")
+                {
+                    break;
+                }
+                else if (password == "qs")
+                {
+                    command = "qsi";
+                    break;
+                }
+            }
+
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Bezprzewodowy Uruchamiacz NyanCata v1");
+            Console.WriteLine("Bezprzewodowy Uruchamiacz NyanCata v2");
             Console.WriteLine("Aby zakonczyc wykonywanie komendy, wpisz 'exit'");
             Console.WriteLine("Dostepne komendy:");
             Console.WriteLine("'chat' - komunikacja z reszta komputerow");
@@ -43,7 +57,12 @@ namespace DesktopClient
             var handle = GetConsoleWindow();
 
             DaneAplikacji da = new DaneAplikacji();
+#if DEBUG
+            var url = "http://localhost:50043/";
+            Console.WriteLine("Connecting to local server");
+#else
             var url = "http://remotenyancatopener.azurewebsites.net/";
+#endif
             var writer = Console.Out;
             var hubClient = new HubClient(writer);
             hubClient.RunAsync(url).Wait();
@@ -51,33 +70,39 @@ namespace DesktopClient
             //string command = "";
             while (command != "exit")
             {
-                if (Console.ReadKey(true).Key == ConsoleKey.DownArrow && consoleHidden)
+                if (consoleHidden)
                 {
-                    while (true)
+                    if (Console.ReadKey(true).Key == ConsoleKey.DownArrow)
                     {
-                        if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                        while (true)
                         {
-                            while (true)
+                            if (Console.ReadKey(true).Key == ConsoleKey.Escape)
                             {
-                                if (Console.ReadKey(true).Key == ConsoleKey.Backspace)
+                                while (true)
                                 {
-                                    ShowWindow(handle, SW_SHOW);
-                                }
-                                else
-                                {
-                                    break;
+                                    if (Console.ReadKey(true).Key == ConsoleKey.Backspace)
+                                    {
+                                        ShowWindow(handle, SW_SHOW);
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            break;
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
                 }
 
-                Console.WriteLine("Wpisz komende: ");
-                command = Console.ReadLine();
+                if (command != "qsi")
+                {
+                    Console.WriteLine("Wpisz komende: ");
+                    command = Console.ReadLine();
+                }
                 if (command == "chat")
                 {
                     string text;
@@ -107,11 +132,11 @@ namespace DesktopClient
                     hubClient._hubProxy.Invoke("setNickname", name);
                     Console.WriteLine("Zapytanie wyslane, poczekaj na komunikat z serwera");
                 }
-                if (command == "hardcoremode" || command == "qs")
+                if (command == "hardcoremode" || command == "qs" || command == "qsi")
                 {
                     DaneAplikacji.Admin = "admin";
                 }
-                if (command == "hide" || command == "qs")
+                if (command == "hide" || command == "qs" || command == "qsi")
                 {
                     ShowWindow(handle, SW_HIDE);
                     consoleHidden = true;

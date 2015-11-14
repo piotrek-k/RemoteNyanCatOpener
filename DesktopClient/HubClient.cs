@@ -34,10 +34,14 @@ namespace DesktopClient
             _hubProxy.On<string[]>("runExe", (data) =>
             {
                 //_traceWriter.WriteLine("Uruchamianie " + data[1] + " przez admina " + data[0]);
-                Program.serverMessage("Uruchamianie " + data[1] + " przez admina " + data[0]);
                 if (data[0] == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
                 {
+                    Program.serverMessage("Uruchamianie " + data[1] + " przez admina " + data[0]);
                     System.Diagnostics.Process.Start(data[1]);
+                }
+                else
+                {
+                    Program.serverMessage(data[0] + " probowal uruchomic plik " + data[1] + ". Nie ma do tego uprawnien.");
                 }
             });
 
