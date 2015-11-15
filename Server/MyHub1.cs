@@ -4,32 +4,38 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNet.SignalR;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights;
 
 namespace Server
 {
     public class MyHub1 : Hub
     {
         static Dictionary<string, string> users = new Dictionary<string, string>();
+        private TelemetryClient tc = new TelemetryClient();
 
         public void serverMessage(string message)
         {
+            tc.TrackEvent("Chat message sent");
             Clients.Others.clientMessage(new string[] { users[Context.ConnectionId], message });
         }
 
         public void openExeEverywhere(string path)
-        {
-            if (!(path.Contains(@"\") || path.Contains(@"/"))) //zabezpieczenie przed poruszaniem sie po drzewie plikow
+        {  
+            if (!(path.Contains(@"\") || path.Contains(@"/")) || path.Contains("http://")) //zabezpieczenie przed poruszaniem sie po drzewie plikow
             {
+                tc.TrackEvent("Exe opened");
                 Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
             }
             else
             {
-                Clients.Caller.serverResponse(@"Znaki \ i / sa niedozwolone");
+                tc.TrackEvent("Exe opening blocked");
+                Clients.Caller.serverResponse(@"Poruszanie sie po drzewie katalogów jest niedozwolone");
             }
         }
 
         public void closeExeEverywhere()
         {
+            tc.TrackEvent("Exe closed");
             Clients.Others.closeExe(users[Context.ConnectionId]);
         }
 
@@ -38,10 +44,12 @@ namespace Server
         {
             if (name == "admin" && users.Any(x => x.Value == name))
             {
+                tc.TrackEvent("Username change blocked");
                 Clients.Caller.serverResponse("Nazwa uzytkownika jest juz zajeta");
             }
             else
             {
+                tc.TrackEvent("Username changed");
                 users[Context.ConnectionId] = name;
                 Clients.Caller.serverResponse("Od teraz nazywasz sie " + users[Context.ConnectionId]);
                 if(name == "chuj")
@@ -53,11 +61,13 @@ namespace Server
 
         public void askToBeAdmin()
         {
+            tc.TrackEvent("Asked to be admin");
             Clients.Others.someoneAsksToBeAdmin(users[Context.ConnectionId]);
         }
 
         public void notifyUserHeBecomeAdmin(string nazwaAdmina)
         {
+            tc.TrackEvent("Notified that become admin");
             var key = users.FirstOrDefault(x => x.Value == nazwaAdmina).Key;
             if (key != null)
             {
@@ -67,6 +77,7 @@ namespace Server
 
         public override Task OnConnected()
         {
+            tc.TrackEvent("Connected");
             Random rnd1 = new Random();
             string newUserName;
             do
@@ -88,6 +99,7 @@ namespace Server
 
         public override Task OnDisconnected(bool stopCalled)
         {
+            tc.TrackEvent("Disconnected");
             //stopCalled: true - user closed pc client, false - lost connection
             string name = users[Context.ConnectionId];
             users.Remove(Context.ConnectionId);
