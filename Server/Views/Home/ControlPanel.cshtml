@@ -9,18 +9,18 @@
     <button id="changeNickname" class="btn btn-default">Zmień nazwę użytkownika</button><br />
 
     <input type="text" id="pathOfFileToOpen1" class="form-control" placeholder="Nazwa pliku 1 " />
-    <button id="openFile1" class="btn btn-default">StartExe1</button><br />
+    <button id="openFile1" class="btn btn-default">StartExe1 (1)</button><br />
     <input type="text" id="pathOfFileToOpen2" class="form-control" placeholder="Nazwa pliku 2" />
-    <button id="openFile2" class="btn btn-default">StartExe2</button><br />
+    <button id="openFile2" class="btn btn-default">StartExe2 (2)</button><br />
     <input type="text" id="pathOfFileToOpen3" class="form-control" value="Delete.bat" />
-    <button id="openFile3" class="btn btn-default">StartExe3</button><br />
+    <button id="openFile3" class="btn btn-default">StartExe3 (3)</button><br />
 
-    <button id="closeFile" class="btn btn-default">CloseExe</button><br />Uwaga, można zamknąć tylko ostatnio otworzony plik. Wszystkie poprzednie pozostana otwarte.<br />
+    <button id="closeFile" class="btn btn-default">CloseExe (0)</button><br />Uwaga, można zamknąć tylko ostatnio otworzony plik. Wszystkie poprzednie pozostana otwarte.<br />
 
     <button id="askToBeAdmin" class="btn btn-default">Spytaj czy możesz być adminem</button><br />
 
     <input type="text" id="newChatMessage" class="form-control" placeholder="Wpisz wiadomosc" />
-    <button id="sendMessage" class="btn btn-default">Wyślij</button><br />
+    <button id="sendMessage" class="btn btn-default">Wyślij (Enter)</button><br />
 </div>
 
 <div id="console"></div>
@@ -79,9 +79,30 @@
                     $('#console').prepend("<span class='chatMessage'>chat: " + $("#newChatMessage").val() + "</span>");
                     hub.server.serverMessage("" + $("#newChatMessage").val());
                     $("#newChatMessage").val("");
+                    $("#newChatMessage").focus();
                 });
             });
 
+            $(document).keypress(function (e) {
+                //console.log(e.which || e.keyCode);
+                var keyCode = e.which || e.keyCode;
+
+                if (keyCode == 49) { //1
+                    $("#openFile1").click();
+                }
+                if (keyCode == 50) { //2
+                    $("#openFile2").click();
+                }
+                if (keyCode == 51) { //3
+                    $("#openFile3").click();
+                }
+                if (keyCode == 13) { //Enter
+                    $("#sendMessage").click();
+                }
+                if (keyCode == 48) { //0
+                    $("#closeFile").click();
+                }
+            });
             
         });
     </script>
