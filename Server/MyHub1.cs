@@ -19,8 +19,9 @@ namespace Server
             // Set up some properties:
             var AIProperties = new Dictionary<string, string>
             {
-                { "UserName", users[Context.ConnectionId]},
-                { "ConnectionId", Context.ConnectionId}
+                { "UserName", users[Context.ConnectionId] },
+                { "ConnectionId", Context.ConnectionId },
+                { "Message", message}
             };
 
             tc.TrackEvent("Chat message sent", AIProperties, null);
@@ -41,8 +42,8 @@ namespace Server
             //}
             var AIProperties = new Dictionary<string, string>
             {
-                { "UserName", users[Context.ConnectionId]},
-                { "ConnectionId", Context.ConnectionId},
+                { "UserName", users[Context.ConnectionId] },
+                { "ConnectionId", Context.ConnectionId },
                 { "PathOfFile", path }
             };
 
@@ -133,7 +134,7 @@ namespace Server
         {
             //var clientVersion = Int32.Parse(Context.QueryString["AppVersion"]);
             int clientVersion;
-            if(!Int32.TryParse(Context.QueryString["AppVersion"], out clientVersion))
+            if (!Int32.TryParse(Context.QueryString["AppVersion"], out clientVersion))
             {
                 clientVersion = 0;
             }
@@ -196,7 +197,7 @@ namespace Server
             string name = users[Context.ConnectionId];
             users.Remove(Context.ConnectionId);
             Clients.All.serverResponse("Uzytkownik " + name + " rozlaczony. Aktualnie " + users.Count + " komputerow online.");
-            
+
             var AIMeasurements = new Dictionary<string, double>
             {
                 { "NumberOfUsersNow", users.Count}
