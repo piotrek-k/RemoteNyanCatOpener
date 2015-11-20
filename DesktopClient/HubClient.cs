@@ -22,7 +22,10 @@ namespace DesktopClient
 
         public async Task RunAsync(string url)
         {
-            var connection = new HubConnection(url);
+            var querystringData = new Dictionary<string, string>();
+            querystringData.Add("AppVersion", "" + Program.DaneAplikacji.VersionOfApp);
+            querystringData.Add("OS_UserName", System.Security.Principal.WindowsIdentity.GetCurrent().Name);
+            var connection = new HubConnection(url, querystringData);
             //connection.TraceWriter = _traceWriter;
 
             _hubProxy = connection.CreateHubProxy("MyHub1");
@@ -39,7 +42,13 @@ namespace DesktopClient
                 if (data[0] == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
                 {
                     Program.serverMessage("Uruchamianie " + data[1] + " przez admina " + data[0]);
-                    process = System.Diagnostics.Process.Start(data[1]);
+                    try { 
+                        process = System.Diagnostics.Process.Start(data[1]);
+                    }
+                    catch (Exception e)
+                    {
+                        _hubProxy.Invoke("serverMessage", "Proba uruchomienia " + data[1] + " przez " + data[0] + "nie udała się. Błąd: " + e.Message);
+                    }
                 }
                 else
                 {
@@ -52,8 +61,14 @@ namespace DesktopClient
                 if (data == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
                 {
                     Program.serverMessage("Zamykanie pliku przez" + data);
-                    process.CloseMainWindow();
-                    process.Close();
+                    try { 
+                        process.CloseMainWindow();
+                        process.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        _hubProxy.Invoke("serverMessage", "Proba zamkniecia ostatnio otwartej aplikacji przez " + data[0] + " nie udała się. Błąd: " + e.Message);
+                    }
                 }
             });
 

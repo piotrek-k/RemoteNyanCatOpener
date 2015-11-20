@@ -10,6 +10,7 @@ namespace DesktopClient
     public class DaneAplikacji
     {
         public string Admin { get; set; }
+        public int VersionOfApp = 3;
     }
 
     class Program
@@ -29,7 +30,7 @@ namespace DesktopClient
         {
             while (true)
             {
-                var password = Console.ReadLine();
+                string password = Console.ReadLine();
                 if (password == "tmm")
                 {
                     break;
@@ -42,17 +43,22 @@ namespace DesktopClient
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Bezprzewodowy Uruchamiacz NyanCata v2");
-            Console.WriteLine("Aby zakonczyc wykonywanie komendy, wpisz 'exit'");
-            Console.WriteLine("Dostepne komendy:");
-            Console.WriteLine("'chat' - komunikacja z reszta komputerow");
-            Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (tych ktore zaakcpetuja cie jako admina)");
-            Console.WriteLine("'closeexe' - zamknij poprzednio otwarty plik exe");
-            Console.WriteLine("'beadmin' - zapytaj innych czy mozesz byc adminem");
-            Console.WriteLine("'username' - zmien swoja nazwe");
-            Console.WriteLine("'hide' - ukryj konsole. DownArrow+Escape+Backspace - wyswietl ja ponownie");
-            Console.WriteLine("'hardcoremode' - wylacz autoryzacje admina, kazdy moze uruchomic ci startexe");
-            Console.WriteLine("'qs' - quick setup - hardcoremode + hide");
+            if (command != "qsi") { 
+                Console.WriteLine("Bezprzewodowy Uruchamiacz NyanCata v" + DaneAplikacji.VersionOfApp);
+                Console.WriteLine("Aby zakonczyc wykonywanie komendy, wpisz 'exit'");
+                Console.WriteLine("Dostepne komendy:");
+                Console.WriteLine("'chat' - komunikacja z reszta komputerow");
+                Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (tych ktore zaakcpetuja cie jako admina)");
+                Console.WriteLine("'closeexe' - zamknij poprzednio otwarty plik exe");
+                Console.WriteLine("'beadmin' - zapytaj innych czy mozesz byc adminem");
+                Console.WriteLine("'username' - zmien swoja nazwe");
+                Console.WriteLine("'hide' - ukryj konsole. DownArrow+Escape+Backspace - wyswietl ja ponownie");
+                Console.WriteLine("'hardcoremode' - wylacz autoryzacje admina, kazdy moze uruchomic ci startexe");
+                Console.WriteLine("'qs' - quick setup - hardcoremode + hide");
+            }
+            Console.WriteLine("**********************");
+            Console.WriteLine("Oczekiwanie na polaczenie z serwerem... (jesli nie pojawia sie czerwony komunikat, wejdz na Centrum Dowodzenia w przegladarce aby uruchomic serwer)");
+            Console.WriteLine("**********************");
             Console.ResetColor();
 
             var handle = GetConsoleWindow();
@@ -109,6 +115,7 @@ namespace DesktopClient
                     string text;
                     do
                     {
+                        Console.Write("chat: ");
                         text = Console.ReadLine();
 
                         hubClient._hubProxy.Invoke("serverMessage", text);

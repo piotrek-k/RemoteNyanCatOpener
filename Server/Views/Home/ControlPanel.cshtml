@@ -19,6 +19,8 @@
 
     <button id="askToBeAdmin" class="btn btn-default">Spytaj czy możesz być adminem</button><br />
 
+    <button id="askToShowAllUsers" class="btn btn-default">Pokaż wszystkich użytkowników</button><br />
+
     <input type="text" id="newChatMessage" class="form-control" placeholder="Wpisz wiadomosc" />
     <button id="sendMessage" class="btn btn-default">Wyślij (Enter)</button><br />
 </div>
@@ -37,6 +39,7 @@
         console.log("Tylko nie zepsuj :/");
         $(function () {
             var hub = $.connection.myHub1;
+            $.connection.hub.qs = { 'AppVersion': '100000' }; //query strings
 
             hub.client.serverResponse = function (data) {
                 $('#console').prepend("<span class='serverMessage'>" + data + "</span>");
@@ -73,6 +76,10 @@
 
                 $("#askToBeAdmin").click(function () {
                     hub.server.askToBeAdmin();
+                });
+
+                $("#askToShowAllUsers").click(function () {
+                    hub.server.getAllUsers();
                 });
 
                 $("#sendMessage").click(function () {
