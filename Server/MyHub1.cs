@@ -15,22 +15,38 @@ namespace Server
 
         public void serverMessage(string message)
         {
-            tc.TrackEvent("Chat message sent");
+            // Set up some properties:
+            var AIProperties = new Dictionary<string, string>
+            {
+                { "UserName", users[Context.ConnectionId]},
+                { "ConnectionId", Context.ConnectionId}
+            };
+
+            tc.TrackEvent("Chat message sent", AIProperties, null);
             Clients.Others.clientMessage(new string[] { users[Context.ConnectionId], message });
         }
 
         public void openExeEverywhere(string path)
-        {  
-            if (!(path.Contains(@"\") || path.Contains(@"/")) || path.Contains("http://")) //zabezpieczenie przed poruszaniem sie po drzewie plikow
+        {
+            //if (!(path.Contains(@"\") || path.Contains(@"/")) || path.Contains("http://")) //zabezpieczenie przed poruszaniem sie po drzewie plikow
+            //{
+            //    tc.TrackEvent("Exe opened");
+            //    Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
+            //}
+            //else
+            //{
+            //    tc.TrackEvent("Exe opening blocked");
+            //    Clients.Caller.serverResponse(@"Poruszanie sie po drzewie katalogów jest niedozwolone");
+            //}
+            var AIProperties = new Dictionary<string, string>
             {
-                tc.TrackEvent("Exe opened");
-                Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
-            }
-            else
-            {
-                tc.TrackEvent("Exe opening blocked");
-                Clients.Caller.serverResponse(@"Poruszanie sie po drzewie katalogów jest niedozwolone");
-            }
+                { "UserName", users[Context.ConnectionId]},
+                { "ConnectionId", Context.ConnectionId},
+                { "PathOfFile", path }
+            };
+
+            tc.TrackEvent("Exe opened", AIProperties, null);
+            Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
         }
 
         public void closeExeEverywhere()
@@ -42,17 +58,24 @@ namespace Server
 
         public void setNickname(string name)
         {
-            if (name == "admin" && users.Any(x => x.Value == name))
+            var AIProperties = new Dictionary<string, string>
             {
-                tc.TrackEvent("Username change blocked");
+                { "CurrentName", users[Context.ConnectionId]},
+                { "ConnectionId", Context.ConnectionId},
+                { "NewName", name }
+            };
+
+            if (name.Equals("admin") || users.Any(x => x.Value == name))
+            {
+                tc.TrackEvent("Username change blocked", AIProperties, null);
                 Clients.Caller.serverResponse("Nazwa uzytkownika jest juz zajeta");
             }
             else
             {
-                tc.TrackEvent("Username changed");
+                tc.TrackEvent("Username changed", AIProperties, null);
                 users[Context.ConnectionId] = name;
                 Clients.Caller.serverResponse("Od teraz nazywasz sie " + users[Context.ConnectionId]);
-                if(name == "chuj")
+                if (name == "chuj")
                 {
                     Clients.Caller.serverResponse("Milej zabawy... chuju :]");
                 }
@@ -61,13 +84,24 @@ namespace Server
 
         public void askToBeAdmin()
         {
-            tc.TrackEvent("Asked to be admin");
+            var AIProperties = new Dictionary<string, string>
+            {
+                { "UserName", users[Context.ConnectionId]},
+                { "ConnectionId", Context.ConnectionId}
+            };
+            tc.TrackEvent("Asked to be admin", AIProperties, null);
             Clients.Others.someoneAsksToBeAdmin(users[Context.ConnectionId]);
         }
 
         public void notifyUserHeBecomeAdmin(string nazwaAdmina)
         {
-            tc.TrackEvent("Notified that become admin");
+            var AIProperties = new Dictionary<string, string>
+            {
+                { "UserNameThatAccepted", users[Context.ConnectionId]},
+                { "ConnectionIdOfUserThatAccepted", Context.ConnectionId},
+                { "AdminName", nazwaAdmina }
+            };
+            tc.TrackEvent("Notified that become admin", AIProperties, null);
             var key = users.FirstOrDefault(x => x.Value == nazwaAdmina).Key;
             if (key != null)
             {
@@ -77,7 +111,6 @@ namespace Server
 
         public override Task OnConnected()
         {
-            tc.TrackEvent("Connected");
             Random rnd1 = new Random();
             string newUserName;
             do
@@ -94,16 +127,38 @@ namespace Server
             users.Add(Context.ConnectionId, newUserName);
             Clients.Client(Context.ConnectionId).serverResponse(users.Count + " uzytkownikow online. Uzywajac tego programu uroczyscie przysiegasz ze knujesz cos niedobrego :]");
 
+            var AIProperties = new Dictionary<string, string>
+            {
+                { "UserName", users[Context.ConnectionId]},
+                { "ConnectionId", Context.ConnectionId}
+            };
+            var AIMeasurements = new Dictionary<string, double>
+            {
+                { "NumberOfUsersNow", users.Count}
+            };
+            tc.TrackEvent("Connected", AIProperties, AIMeasurements);
+
             return base.OnConnected();
         }
 
         public override Task OnDisconnected(bool stopCalled)
         {
-            tc.TrackEvent("Disconnected");
+            
             //stopCalled: true - user closed pc client, false - lost connection
             string name = users[Context.ConnectionId];
             users.Remove(Context.ConnectionId);
             Clients.All.serverResponse("Uzytkownik " + name + " rozlaczony. Aktualnie " + users.Count + " komputerow online.");
+
+            var AIProperties = new Dictionary<string, string>
+            {
+                { "UserName", users[Context.ConnectionId]},
+                { "ConnectionId", Context.ConnectionId}
+            };
+            var AIMeasurements = new Dictionary<string, double>
+            {
+                { "NumberOfUsersNow", users.Count}
+            };
+            tc.TrackEvent("Disconnected", AIProperties, AIMeasurements);
 
             return base.OnDisconnected(stopCalled);
         }
