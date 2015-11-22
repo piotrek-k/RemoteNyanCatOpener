@@ -12,7 +12,7 @@ namespace Server
     {
         static Dictionary<string, string> users = new Dictionary<string, string>();
         private TelemetryClient tc = new TelemetryClient();
-        public static int currentAppVersion = 3;
+        public static int currentAppVersion = 4;
 
         public void serverMessage(string message)
         {
@@ -28,7 +28,7 @@ namespace Server
             Clients.Others.clientMessage(new string[] { users[Context.ConnectionId], message });
         }
 
-        public void openExeEverywhere(string path)
+        public void openExeEverywhere(string path, bool? thenCloseLauncher=false)
         {
             //if (!(path.Contains(@"\") || path.Contains(@"/")) || path.Contains("http://")) //zabezpieczenie przed poruszaniem sie po drzewie plikow
             //{
@@ -44,11 +44,12 @@ namespace Server
             {
                 { "UserName", users[Context.ConnectionId] },
                 { "ConnectionId", Context.ConnectionId },
-                { "PathOfFile", path }
+                { "PathOfFile", path },
+                { "ThenCloseLauncher", thenCloseLauncher.ToString() }
             };
 
             tc.TrackEvent("Exe opened", AIProperties, null);
-            Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
+            Clients.Others.runExe(new string[] { users[Context.ConnectionId], path, thenCloseLauncher.ToString() });
         }
 
         public void closeExeEverywhere()

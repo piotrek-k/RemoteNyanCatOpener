@@ -47,7 +47,12 @@ namespace DesktopClient
                     }
                     catch (Exception e)
                     {
-                        _hubProxy.Invoke("serverMessage", "Proba uruchomienia " + data[1] + " przez " + data[0] + "nie udała się. Błąd: " + e.Message);
+                        _hubProxy.Invoke("serverMessage", "Proba uruchomienia " + data[1] + " przez " + data[0] + " nie udała się. Błąd: " + e.Message);
+                    }
+                    if(data[2] == true.ToString())
+                    {
+                        _hubProxy.Invoke("serverMessage", "Melduje wykonanie zadania :] Launcher zamkniety.");
+                        System.Environment.Exit(1);
                     }
                 }
                 else

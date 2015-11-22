@@ -12,8 +12,9 @@
     <button id="openFile1" class="btn btn-default">StartExe1 (1)</button><br />
     <input type="text" id="pathOfFileToOpen2" class="form-control" placeholder="Nazwa pliku 2" />
     <button id="openFile2" class="btn btn-default">StartExe2 (2)</button><br />
-    <input type="text" id="pathOfFileToOpen3" class="form-control" value="Delete.bat" />
-    <button id="openFile3" class="btn btn-default">StartExe3 (3)</button><br />
+    <input type="text" id="pathOfFileToOpen3" class="form-control" value="../Delete.bat" />
+    <button id="openFile3" class="btn btn-default">StartExe3 (3)</button>
+    <input type="checkbox" id="closeAfterExecuting" /> Zamknij launcher po uruchomieniu pliku<br />
 
     <button id="closeFile" class="btn btn-default">CloseExe (0)</button><br />Uwaga, można zamknąć tylko ostatnio otworzony plik. Wszystkie poprzednie pozostana otwarte.<br />
 
@@ -57,13 +58,14 @@
                 hub.server.serverMessage("***New website user connected");
 
                 $("#openFile1").click(function () {
-                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen1").val());
+                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen1").val(), false);
                 });
                 $("#openFile2").click(function () {
-                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen2").val());
+                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen2").val(), false);
                 });
                 $("#openFile3").click(function () {
-                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen3").val());
+                    //alert($("#closeAfterExecuting").is(":checked"));
+                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen3").val(), $("#closeAfterExecuting").is(":checked"));
                 });
 
                 $("#closeFile").click(function () {
