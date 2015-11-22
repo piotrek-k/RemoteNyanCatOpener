@@ -12,7 +12,7 @@ namespace Server
     {
         static Dictionary<string, string> users = new Dictionary<string, string>();
         private TelemetryClient tc = new TelemetryClient();
-        public static int currentAppVersion = 4;
+        public static int currentAppVersion = 5;
 
         public void serverMessage(string message)
         {
@@ -164,10 +164,12 @@ namespace Server
             }
 
             Clients.Client(Context.ConnectionId).serverResponse(users.Count + " uzytkownikow online. Uzywajac tego programu uroczyscie przysiegasz ze knujesz cos niedobrego :]");
+            Clients.Others.serverResponse("Nowy uzytkownik o nazwie '" + users[Context.ConnectionId] + "' podlaczony do sieci");
 
             if (clientVersion < currentAppVersion)
             {
                 Clients.Client(Context.ConnectionId).serverResponse("Prawdopodobnie posiadasz przestarzala wersje tej aplikacji. Moze ona nie dzialac prawidlowo");
+                Clients.Others.serverResponse(users[Context.ConnectionId] + " ma przestarzala wersje launchera.");
             }
 
             var AIProperties = new Dictionary<string, string>

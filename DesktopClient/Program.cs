@@ -10,7 +10,7 @@ namespace DesktopClient
     public class DaneAplikacji
     {
         public string Admin { get; set; }
-        public int VersionOfApp = 4;
+        public int VersionOfApp = 5;
     }
 
     class Program

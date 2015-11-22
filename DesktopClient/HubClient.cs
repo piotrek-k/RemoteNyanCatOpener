@@ -109,7 +109,7 @@ namespace DesktopClient
             });
 
             await connection.Start();
-            await _hubProxy.Invoke("serverMessage", "***New Computer connected");
+            //await _hubProxy.Invoke("serverMessage", "***New Computer connected");
         }
     }
 }
