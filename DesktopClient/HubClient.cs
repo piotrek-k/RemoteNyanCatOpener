@@ -51,8 +51,8 @@ namespace DesktopClient
                     }
                     if(data[2] == true.ToString())
                     {
-                        _hubProxy.Invoke("serverMessage", "Melduje wykonanie zadania :] Launcher zostanie zamkniety za 2 sec.");
-                        System.Threading.Thread.Sleep(2000);
+                        _hubProxy.Invoke("serverMessage", "Melduje wykonanie zadania :] Launcher zostanie zamkniety za 0.5 sec.");
+                        System.Threading.Thread.Sleep(1000);
                         System.Environment.Exit(1);
                     }
                 }

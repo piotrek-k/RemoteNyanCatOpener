@@ -12,7 +12,7 @@ namespace Server
     {
         static Dictionary<string, string> users = new Dictionary<string, string>();
         private TelemetryClient tc = new TelemetryClient();
-        public static int currentAppVersion = 5;
+        public static int currentAppVersion = 6;
 
         public void serverMessage(string message)
         {
