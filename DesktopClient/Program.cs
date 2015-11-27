@@ -52,7 +52,7 @@ namespace DesktopClient
                 //Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (tych ktore zaakcpetuja cie jako admina)");
                 //Console.WriteLine("'closeexe' - zamknij poprzednio otwarty plik exe");
                 //Console.WriteLine("'beadmin' - zapytaj innych czy mozesz byc adminem");
-                Console.WriteLine("'username' - zmien swoja nazwe");
+                //Console.WriteLine("'username' - zmien swoja nazwe");
                 Console.WriteLine("'hide' - ukryj konsole. DownArrow+Escape+Backspace - wyswietl ja ponownie");
                 Console.WriteLine("'hardcoremode' - wylacz autoryzacje admina, kazdy moze uruchomic ci startexe");
                 Console.WriteLine("'qs' - quick setup - hardcoremode + hide");
