@@ -26,6 +26,7 @@ namespace DesktopClient
             var querystringData = new Dictionary<string, string>();
             querystringData.Add("AppVersion", "" + Program.DaneAplikacji.VersionOfApp);
             querystringData.Add("OS_UserName", System.Security.Principal.WindowsIdentity.GetCurrent().Name);
+            Program.DaneAplikacji.CurrentUserName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             var connection = new HubConnection(url, querystringData);
             //connection.TraceWriter = _traceWriter;
 
@@ -113,11 +114,11 @@ namespace DesktopClient
                             tw.WriteLine(data.Content);
                             tw.Close();
                         }
-                        _hubProxy.Invoke("serverMessage", "Utworzono plik");
+                        _hubProxy.Invoke("serverMessage", data.UserName + " utworzył nowy plik o sciezce: '" + data.Path + "' i zawartosci: '" + data.Content + "' u uzytkownika: " + Program.DaneAplikacji.CurrentUserName);
                     }
                     else
                     {
-                        _hubProxy.Invoke("serverMessage", "Brak uprawnien do utworzenia nowego pliku");
+                        _hubProxy.Invoke("serverMessage", data.UserName + " nie ma uprawnien do utworzenia nowego pliku u uzytkownika " + Program.DaneAplikacji.CurrentUserName);
                     }
                 }
                 catch (Exception e)

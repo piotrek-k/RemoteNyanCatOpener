@@ -11,6 +11,7 @@ namespace DesktopClient
     {
         public string Admin { get; set; }
         public int VersionOfApp = 7;
+        public string CurrentUserName { get; set; }
     }
 
     class Program
@@ -137,13 +138,13 @@ namespace DesktopClient
                 //    Console.WriteLine("Wyslano zapytanie");
                 //    hubClient._hubProxy.Invoke("askToBeAdmin");
                 //}
-                if (command == "username")
-                {
-                    Console.Write("Podaj nowa nazwe uzytkownika: ");
-                    string name = Console.ReadLine();
-                    hubClient._hubProxy.Invoke("setNickname", name);
-                    Console.WriteLine("Zapytanie wyslane, poczekaj na komunikat z serwera");
-                }
+                //if (command == "username")
+                //{
+                //    Console.Write("Podaj nowa nazwe uzytkownika: ");
+                //    string name = Console.ReadLine();
+                //    hubClient._hubProxy.Invoke("setNickname", name);
+                //    Console.WriteLine("Zapytanie wyslane, poczekaj na komunikat z serwera");
+                //}
                 if (command == "hardcoremode" || command == "qs" || command == "qsi")
                 {
                     DaneAplikacji.Admin = "admin";
