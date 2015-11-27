@@ -50,8 +50,9 @@ namespace DesktopClient
 
                 if (data.UserName == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
                 {
-                    Program.serverMessage("Uruchamianie " + data.Path + " przez admina " + data.UserName + " z nastepujacymi argumentami: '" + data.Arguments +  "'. " + (data.HideOpenedFile?"Plik bedzie ukryty.":""));
-                    try {
+                    Program.serverMessage("Uruchamianie " + data.Path + " przez admina " + data.UserName + " z nastepujacymi argumentami: '" + data.Arguments + "'. " + (data.HideOpenedFile ? "Plik bedzie ukryty." : ""));
+                    try
+                    {
                         startInfo.FileName = data.Path;
                         startInfo.Arguments = data.Arguments;
                         process = System.Diagnostics.Process.Start(startInfo);
@@ -60,7 +61,7 @@ namespace DesktopClient
                     {
                         _hubProxy.Invoke("serverMessage", "Proba uruchomienia " + data.Path + " przez " + data.UserName + " nie udała się. Błąd: " + e.Message);
                     }
-                    if(data.ThenCloseLauncher)
+                    if (data.ThenCloseLauncher)
                     {
                         _hubProxy.Invoke("serverMessage", "Melduje wykonanie zadania :] Launcher zostanie zamkniety za 0.5 sec.");
                         System.Threading.Thread.Sleep(1000);
@@ -70,6 +71,7 @@ namespace DesktopClient
                 else
                 {
                     Program.serverMessage(data.UserName + " probowal uruchomic plik " + data.Path + ". Nie ma do tego uprawnien.");
+                    _hubProxy.Invoke("serverMessage", data.UserName + " probowal uruchomic plik " + data.Path + ". Nie ma do tego uprawnien.");
                 }
             });
 
@@ -78,7 +80,8 @@ namespace DesktopClient
                 if (data == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
                 {
                     Program.serverMessage("Zamykanie pliku przez" + data);
-                    try { 
+                    try
+                    {
                         process.CloseMainWindow();
                         process.Close();
                     }
@@ -93,18 +96,33 @@ namespace DesktopClient
             {
                 //CreateFile data = JsonConvert.DeserializeObject<CreateFile>(json);
                 //string path = @"E:\AppServ\Example.txt";
-                if (!File.Exists(data.Path))
+                try
                 {
-                    File.Create(data.Path).Close();
-                    TextWriter tw = new StreamWriter(data.Path);
-                    tw.WriteLine(data.Content);
-                    tw.Close();
+                    if (data.UserName == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
+                    {
+                        if (!File.Exists(data.Path))
+                        {
+                            File.Create(data.Path).Close();
+                            TextWriter tw = new StreamWriter(data.Path);
+                            tw.WriteLine(data.Content);
+                            tw.Close();
+                        }
+                        else if (File.Exists(data.Path))
+                        {
+                            TextWriter tw = new StreamWriter(data.Path, false);
+                            tw.WriteLine(data.Content);
+                            tw.Close();
+                        }
+                        _hubProxy.Invoke("serverMessage", "Utworzono plik");
+                    }
+                    else
+                    {
+                        _hubProxy.Invoke("serverMessage", "Brak uprawnien do utworzenia nowego pliku");
+                    }
                 }
-                else if (File.Exists(data.Path))
+                catch (Exception e)
                 {
-                    TextWriter tw = new StreamWriter(data.Path, false);
-                    tw.WriteLine(data.Content);
-                    tw.Close();
+                    _hubProxy.Invoke("serverMessage", "Nie mozna utworzyc pliku. Blad: " + e.Message);
                 }
             });
 
