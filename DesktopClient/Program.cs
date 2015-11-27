@@ -10,7 +10,7 @@ namespace DesktopClient
     public class DaneAplikacji
     {
         public string Admin { get; set; }
-        public int VersionOfApp = 6;
+        public int VersionOfApp = 7;
     }
 
     class Program
@@ -48,9 +48,9 @@ namespace DesktopClient
                 Console.WriteLine("Aby zakonczyc wykonywanie komendy, wpisz 'exit'");
                 Console.WriteLine("Dostepne komendy:");
                 Console.WriteLine("'chat' - komunikacja z reszta komputerow");
-                Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (tych ktore zaakcpetuja cie jako admina)");
-                Console.WriteLine("'closeexe' - zamknij poprzednio otwarty plik exe");
-                Console.WriteLine("'beadmin' - zapytaj innych czy mozesz byc adminem");
+                //Console.WriteLine("'startexe' - uruchom plik exe na innych komputerach (tych ktore zaakcpetuja cie jako admina)");
+                //Console.WriteLine("'closeexe' - zamknij poprzednio otwarty plik exe");
+                //Console.WriteLine("'beadmin' - zapytaj innych czy mozesz byc adminem");
                 Console.WriteLine("'username' - zmien swoja nazwe");
                 Console.WriteLine("'hide' - ukryj konsole. DownArrow+Escape+Backspace - wyswietl ja ponownie");
                 Console.WriteLine("'hardcoremode' - wylacz autoryzacje admina, kazdy moze uruchomic ci startexe");
@@ -122,21 +122,21 @@ namespace DesktopClient
                     }
                     while (text != "exit");
                 }
-                if (command == "startexe")
-                {
-                    Console.Write("Podaj nazwe pliku: ");
-                    string path = Console.ReadLine();
-                    hubClient._hubProxy.Invoke("openExeEverywhere", path);
-                }
-                if(command == "closeexe")
-                {
-                    hubClient._hubProxy.Invoke("closeExeEverywhere");
-                }
-                if (command == "beadmin")
-                {
-                    Console.WriteLine("Wyslano zapytanie");
-                    hubClient._hubProxy.Invoke("askToBeAdmin");
-                }
+                //if (command == "startexe")
+                //{
+                //    Console.Write("Podaj nazwe pliku: ");
+                //    string path = Console.ReadLine();
+                //    hubClient._hubProxy.Invoke("openExeEverywhere", path);
+                //}
+                //if(command == "closeexe")
+                //{
+                //    hubClient._hubProxy.Invoke("closeExeEverywhere");
+                //}
+                //if (command == "beadmin")
+                //{
+                //    Console.WriteLine("Wyslano zapytanie");
+                //    hubClient._hubProxy.Invoke("askToBeAdmin");
+                //}
                 if (command == "username")
                 {
                     Console.Write("Podaj nowa nazwe uzytkownika: ");

@@ -5,16 +5,30 @@
 
 <h2>Centrum dowodzenia</h2>
 <div class="childrenInline">
-    <input type="text" id="newNickname" class="form-control" placeholder="Twoja nowa nazwa uzytkownika" />
-    <button id="changeNickname" class="btn btn-default">Zmień nazwę użytkownika</button><br />
+    @for (var index = 1; index <= 3; index++)
+    {
+        <div class="exeSlots">
+            Otwórz plik/stronę www/folder
+            <input type="text" id="pathOfFileToOpen" class="form-control" placeholder="Sciezka" />
+            <input type="text" id="arguments" class="form-control" placeholder="Argumenty" />
+            <input type="checkbox" id="closeAfterExecuting" />
+            <span>Zamknij launcher po uruchomieniu pliku</span><br />
 
-    <input type="text" id="pathOfFileToOpen1" class="form-control" placeholder="Nazwa pliku 1 " />
-    <button id="openFile1" class="btn btn-default">StartExe1 (1)</button><br />
-    <input type="text" id="pathOfFileToOpen2" class="form-control" placeholder="Nazwa pliku 2" />
-    <button id="openFile2" class="btn btn-default">StartExe2 (2)</button><br />
-    <input type="text" id="pathOfFileToOpen3" class="form-control" value="..\Delete.bat" />
-    <button id="openFile3" class="btn btn-default">StartExe3 (3)</button>
-    <input type="checkbox" id="closeAfterExecuting" /> Zamknij launcher po uruchomieniu pliku<br />
+            <input type="checkbox" id="hideAfterExecuting" />
+            <span>Ukryj uruchamiany plik </span><br />
+
+            <button id="openFile3" class="btn btn-default runExeButton">Uruchom</button>
+        </div>
+    }
+
+    <div class="exeSlots">
+        Utwórz plik tekstowy
+        <input type="text" id="fileName" class="form-control" placeholder="Ścieżka do pliku" />
+        <textarea id="textToFile" class="form-control" placeholder="Zawartosc pliku"></textarea>
+        <button id="createFile" class="btn btn-default">Utworz plik</button>
+    </div>
+
+    <p><b>Używając cmd.exe</b> przed komendą wstaw "/c", inaczej nie będzie działać</p>
 
     <button id="closeFile" class="btn btn-default">CloseExe (0)</button><br />Uwaga, można zamknąć tylko ostatnio otworzony plik. Wszystkie poprzednie pozostana otwarte.<br />
 
@@ -22,7 +36,10 @@
 
     <button id="askToShowAllUsers" class="btn btn-default">Pokaż wszystkich użytkowników</button><br />
 
-    <input type="text" id="newChatMessage" class="form-control" placeholder="Wpisz wiadomosc" />
+    <input type="text" id="newNickname" class="form-control" placeholder="Twoja nowa nazwa uzytkownika" style="display: inline"/>
+    <button id="changeNickname" class="btn btn-default">Zmień nazwę użytkownika</button><br />
+
+    <input type="text" id="newChatMessage" class="form-control" placeholder="Wpisz wiadomosc"style="display: inline" />
     <button id="sendMessage" class="btn btn-default">Wyślij (Enter)</button><br />
 </div>
 
@@ -57,15 +74,21 @@
             $.connection.hub.start().done(function () {
                 hub.server.serverMessage("***New website user connected");
 
-                $("#openFile1").click(function () {
-                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen1").val(), false);
+                $(".runExeButton").click(function () {
+                    var parent = $(this).parent();
+                    var path = parent.find("#pathOfFileToOpen").val();
+                    var arguments = parent.find("#arguments").val();
+                    var close = parent.find("#closeAfterExecuting").is(":checked");
+                    var hide = parent.find("#hideAfterExecuting").is(":checked");
+                    console.log("Data: " + path + " " + arguments + " " + hide + " " + close);
+                    hub.server.openExeEverywhere(path, arguments, close, hide);
                 });
-                $("#openFile2").click(function () {
-                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen2").val(), false);
-                });
-                $("#openFile3").click(function () {
-                    //alert($("#closeAfterExecuting").is(":checked"));
-                    hub.server.openExeEverywhere("" + $("#pathOfFileToOpen3").val(), $("#closeAfterExecuting").is(":checked"));
+
+                $("#createFile").click(function () {
+                    var parent = $(this).parent();
+                    var path = parent.find("#fileName").val();
+                    var content = parent.find("#textToFile").val();
+                    hub.server.createFileAndWrite(path, content);
                 });
 
                 $("#closeFile").click(function () {
@@ -91,6 +114,7 @@
                     $("#newChatMessage").focus();
                 });
             });
+
 
             $(document).keypress(function (e) {
                 //console.log(e.which || e.keyCode);

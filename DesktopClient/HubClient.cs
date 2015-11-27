@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using Server.HubModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,20 +37,30 @@ namespace DesktopClient
                 Program.chatMessage(data[0] + ": " + data[1]);
             });
 
-            _hubProxy.On<string[]>("runExe", (data) =>
+            _hubProxy.On<RunExe>("runExe", (data) =>
             {
-                //_traceWriter.WriteLine("Uruchamianie " + data[1] + " przez admina " + data[0]);
-                if (data[0] == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
+                //RunExe data = JsonConvert.DeserializeObject<RunExe>(json);
+                process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                if (data.HideOpenedFile)
                 {
-                    Program.serverMessage("Uruchamianie " + data[1] + " przez admina " + data[0]);
-                    try { 
-                        process = System.Diagnostics.Process.Start(data[1]);
+                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                }
+                //startInfo.Arguments = data.Arguments;
+
+                if (data.UserName == Program.DaneAplikacji.Admin || Program.DaneAplikacji.Admin == "admin")
+                {
+                    Program.serverMessage("Uruchamianie " + data.Path + " przez admina " + data.UserName + " z nastepujacymi argumentami: '" + data.Arguments +  "'. " + (data.HideOpenedFile?"Plik bedzie ukryty.":""));
+                    try {
+                        startInfo.FileName = data.Path;
+                        startInfo.Arguments = data.Arguments;
+                        process = System.Diagnostics.Process.Start(startInfo);
                     }
                     catch (Exception e)
                     {
-                        _hubProxy.Invoke("serverMessage", "Proba uruchomienia " + data[1] + " przez " + data[0] + " nie udała się. Błąd: " + e.Message);
+                        _hubProxy.Invoke("serverMessage", "Proba uruchomienia " + data.Path + " przez " + data.UserName + " nie udała się. Błąd: " + e.Message);
                     }
-                    if(data[2] == true.ToString())
+                    if(data.ThenCloseLauncher)
                     {
                         _hubProxy.Invoke("serverMessage", "Melduje wykonanie zadania :] Launcher zostanie zamkniety za 0.5 sec.");
                         System.Threading.Thread.Sleep(1000);
@@ -58,7 +69,7 @@ namespace DesktopClient
                 }
                 else
                 {
-                    Program.serverMessage(data[0] + " probowal uruchomic plik " + data[1] + ". Nie ma do tego uprawnien.");
+                    Program.serverMessage(data.UserName + " probowal uruchomic plik " + data.Path + ". Nie ma do tego uprawnien.");
                 }
             });
 
@@ -78,6 +89,24 @@ namespace DesktopClient
                 }
             });
 
+            _hubProxy.On<CreateFile>("createFile", (data) =>
+            {
+                //CreateFile data = JsonConvert.DeserializeObject<CreateFile>(json);
+                //string path = @"E:\AppServ\Example.txt";
+                if (!File.Exists(data.Path))
+                {
+                    File.Create(data.Path).Close();
+                    TextWriter tw = new StreamWriter(data.Path);
+                    tw.WriteLine(data.Content);
+                    tw.Close();
+                }
+                else if (File.Exists(data.Path))
+                {
+                    TextWriter tw = new StreamWriter(data.Path, false);
+                    tw.WriteLine(data.Content);
+                    tw.Close();
+                }
+            });
 
             _hubProxy.On<string>("serverResponse", (data) =>
             {

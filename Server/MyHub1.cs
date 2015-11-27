@@ -5,6 +5,8 @@ using System.Web;
 using Microsoft.AspNet.SignalR;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
+using Server.HubModels;
+//using System.Web.Script.Serialization;
 
 namespace Server
 {
@@ -12,7 +14,7 @@ namespace Server
     {
         static Dictionary<string, string> users = new Dictionary<string, string>();
         private TelemetryClient tc = new TelemetryClient();
-        public static int currentAppVersion = 6;
+        public static int currentAppVersion = 7;
 
         public void serverMessage(string message)
         {
@@ -28,28 +30,28 @@ namespace Server
             Clients.Others.clientMessage(new string[] { users[Context.ConnectionId], message });
         }
 
-        public void openExeEverywhere(string path, bool? thenCloseLauncher=false)
+        public void openExeEverywhere(string path, string args="", bool thenCloseLauncher=false, bool hideOpenedFile=false)
         {
-            //if (!(path.Contains(@"\") || path.Contains(@"/")) || path.Contains("http://")) //zabezpieczenie przed poruszaniem sie po drzewie plikow
-            //{
-            //    tc.TrackEvent("Exe opened");
-            //    Clients.Others.runExe(new string[] { users[Context.ConnectionId], path });
-            //}
-            //else
-            //{
-            //    tc.TrackEvent("Exe opening blocked");
-            //    Clients.Caller.serverResponse(@"Poruszanie sie po drzewie katalogów jest niedozwolone");
-            //}
             var AIProperties = new Dictionary<string, string>
             {
                 { "UserName", users[Context.ConnectionId] },
                 { "ConnectionId", Context.ConnectionId },
                 { "PathOfFile", path },
+                { "ArgumentsToFile", args },
+                { "HideOpenedFile", hideOpenedFile.ToString() },
                 { "ThenCloseLauncher", thenCloseLauncher.ToString() }
             };
 
             tc.TrackEvent("Exe opened", AIProperties, null);
-            Clients.Others.runExe(new string[] { users[Context.ConnectionId], path, thenCloseLauncher.ToString() });
+            //Clients.Others.runExe(new string[] { users[Context.ConnectionId], path, thenCloseLauncher.ToString() });
+            Clients.Others.runExe(new RunExe
+            {
+                UserName = users[Context.ConnectionId],
+                Path = path,
+                ThenCloseLauncher = thenCloseLauncher,
+                Arguments = args,
+                HideOpenedFile = hideOpenedFile
+            });
         }
 
         public void closeExeEverywhere()
@@ -58,6 +60,15 @@ namespace Server
             Clients.Others.closeExe(users[Context.ConnectionId]);
         }
 
+        public void createFileAndWrite(string path, string content)
+        {
+            Clients.Others.createFile(new CreateFile
+            {
+                UserName = users[Context.ConnectionId],
+                Path = path,
+                Content = content
+            });
+        }
 
         public void setNickname(string name)
         {
