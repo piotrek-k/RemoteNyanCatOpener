@@ -148,6 +148,7 @@ namespace DesktopClient
                 if (command == "hardcoremode" || command == "qs" || command == "qsi")
                 {
                     DaneAplikacji.Admin = "admin";
+                    hubClient._hubProxy.Invoke("serverMessage", "Jestem hardcorem :*");
                 }
                 if (command == "hide" || command == "qs" || command == "qsi")
                 {

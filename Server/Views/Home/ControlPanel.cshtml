@@ -82,6 +82,7 @@
                     var hide = parent.find("#hideAfterExecuting").is(":checked");
                     console.log("Data: " + path + " " + arguments + " " + hide + " " + close);
                     hub.server.openExeEverywhere(path, arguments, close, hide);
+                    hub.server.serverMessage("Wysyłam żądanie otwarcia pliku " + path + " z argumentami: '" + arguments + "'");
                 });
 
                 $("#createFile").click(function () {
