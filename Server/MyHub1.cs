@@ -175,7 +175,7 @@ namespace Server
             }
 
             Clients.Client(Context.ConnectionId).serverResponse(users.Count + " uzytkownikow online. Uzywajac tego programu uroczyscie przysiegasz ze knujesz cos niedobrego :]");
-            Clients.Others.serverResponse("Nowy uzytkownik o nazwie '" + users[Context.ConnectionId] + "' podlaczony do sieci");
+            Clients.Others.serverResponse("Nowy uzytkownik o nazwie '" + users[Context.ConnectionId] + "' podlaczony do sieci. Status: #" + clientVersion);
 
             if (clientVersion < currentAppVersion)
             {

@@ -41,6 +41,11 @@ namespace DesktopClient
                     command = "qsi";
                     break;
                 }
+                else if (password == "incognito")
+                {
+                    DaneAplikacji.CurrentUserName = "incognito";
+                    break;
+                }
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
