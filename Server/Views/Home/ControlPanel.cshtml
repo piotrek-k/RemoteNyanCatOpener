@@ -20,6 +20,8 @@
             <button id="openFile3" class="btn btn-default runExeButton">Uruchom</button>
         </div>
     }
+    <input type="checkbox" id="launcherOutdated" />
+    <span>Launchery są przestarzałe (zaznaczyć gdy launcher ma wersję mniejszą niż 7)</span><br />
 
     <div class="exeSlots">
         Utwórz plik tekstowy
@@ -36,10 +38,10 @@
 
     <button id="askToShowAllUsers" class="btn btn-default">Pokaż wszystkich użytkowników</button><br />
 
-    <input type="text" id="newNickname" class="form-control" placeholder="Twoja nowa nazwa uzytkownika" style="display: inline"/>
+    <input type="text" id="newNickname" class="form-control" placeholder="Twoja nowa nazwa uzytkownika" style="display: inline" />
     <button id="changeNickname" class="btn btn-default">Zmień nazwę użytkownika</button><br />
 
-    <input type="text" id="newChatMessage" class="form-control" placeholder="Wpisz wiadomosc"style="display: inline" />
+    <input type="text" id="newChatMessage" class="form-control" placeholder="Wpisz wiadomosc" style="display: inline" />
     <button id="sendMessage" class="btn btn-default">Wyślij (Enter)</button><br />
 </div>
 
@@ -71,8 +73,14 @@
                 $('#console').prepend("<span>" + data + " zaakceptowal cie jako admina</span>");
             };
 
+            function sendMessage(message) {
+                $('#console').prepend("<span class='chatMessage'>chat: " + message + "</span>");
+                hub.server.serverMessage("" + message);
+            }
+
             $.connection.hub.start().done(function () {
-                hub.server.serverMessage("***New website user connected");
+                //hub.server.serverMessage("***New website user connected");
+                sendMessage("***New website user connected");
 
                 $(".runExeButton").click(function () {
                     var parent = $(this).parent();
@@ -81,8 +89,14 @@
                     var close = parent.find("#closeAfterExecuting").is(":checked");
                     var hide = parent.find("#hideAfterExecuting").is(":checked");
                     console.log("Data: " + path + " " + arguments + " " + hide + " " + close);
-                    hub.server.openExeEverywhere(path, arguments, close, hide);
-                    hub.server.serverMessage("Wysyłam żądanie otwarcia pliku " + path + " z argumentami: '" + arguments + "'");
+                    if ($("#launcherOutdated").is(":checked")) {
+                        hub.server.openExeEverywhere("" + $("#pathOfFileToOpen2").val(), false);
+                        sendMessage("Uruchamianie dla wersji < 7");
+                    } else {
+                        hub.server.openExeEverywhere(path, arguments, close, hide);
+                    }
+                    //hub.server.serverMessage("Wysyłam żądanie otwarcia pliku " + path + " z argumentami: '" + arguments + "'");
+                    sendMessage("Wysyłam żądanie otwarcia pliku " + path + " z argumentami: '" + arguments + "'");
                 });
 
                 $("#createFile").click(function () {
@@ -109,8 +123,9 @@
                 });
 
                 $("#sendMessage").click(function () {
-                    $('#console').prepend("<span class='chatMessage'>chat: " + $("#newChatMessage").val() + "</span>");
-                    hub.server.serverMessage("" + $("#newChatMessage").val());
+                    //$('#console').prepend("<span class='chatMessage'>chat: " + $("#newChatMessage").val() + "</span>");
+                    //hub.server.serverMessage("" + $("#newChatMessage").val());
+                    sendMessage($("#newChatMessage").val());
                     $("#newChatMessage").val("");
                     $("#newChatMessage").focus();
                 });
