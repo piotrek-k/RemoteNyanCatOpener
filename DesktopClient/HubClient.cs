@@ -25,9 +25,9 @@ namespace DesktopClient
         {
             var querystringData = new Dictionary<string, string>();
             querystringData.Add("AppVersion", "" + Program.DaneAplikacji.VersionOfApp);
-            querystringData.Add("OS_UserName", System.Security.Principal.WindowsIdentity.GetCurrent().Name);
             if (Program.DaneAplikacji.CurrentUserName != "incognito")
             {
+                querystringData.Add("OS_UserName", System.Security.Principal.WindowsIdentity.GetCurrent().Name);
                 Program.DaneAplikacji.CurrentUserName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             }
             var connection = new HubConnection(url, querystringData);
