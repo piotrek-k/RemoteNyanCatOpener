@@ -21,7 +21,6 @@
         </div>
     }
     <input type="checkbox" id="launcherOutdated" />
-    <span>Launchery są przestarzałe (zaznaczyć gdy launcher ma wersję mniejszą niż 7)</span><br />
 
     <div class="exeSlots">
         Utwórz plik tekstowy
@@ -89,12 +88,7 @@
                     var close = parent.find("#closeAfterExecuting").is(":checked");
                     var hide = parent.find("#hideAfterExecuting").is(":checked");
                     console.log("Data: " + path + " " + arguments + " " + hide + " " + close);
-                    if ($("#launcherOutdated").is(":checked")) {
-                        hub.server.openExeEverywhere("" + $("#pathOfFileToOpen2").val(), false);
-                        sendMessage("Uruchamianie dla wersji < 7");
-                    } else {
-                        hub.server.openExeEverywhere(path, arguments, close, hide);
-                    }
+                    hub.server.openExeEverywhere(path, arguments, close, hide);
                     //hub.server.serverMessage("Wysyłam żądanie otwarcia pliku " + path + " z argumentami: '" + arguments + "'");
                     sendMessage("Wysyłam żądanie otwarcia pliku " + path + " z argumentami: '" + arguments + "'");
                 });
