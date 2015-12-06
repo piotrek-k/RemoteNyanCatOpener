@@ -9,12 +9,15 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
+#include <Lmcons.h>
 
+using namespace std;
 using namespace web;
 using namespace web::http;
 using namespace web::http::client;
 
 signalr::hub_proxy GlobalProxy;
+int APP_VERSION = 7;
 struct stop_now_t { };
 //Process^ myProcess = gcnew Process;
 
@@ -25,6 +28,30 @@ int StringToWString(std::wstring &ws, const std::string &s)
 	ws = wsTmp;
 
 	return 0;
+}
+
+void TellImCpp(signalr::hub_proxy proxy) {
+	TCHAR username[UNLEN + 1];
+	DWORD size = UNLEN + 1;
+	GetUserName((TCHAR*)username, &size);
+	std::wstring version = std::to_wstring(APP_VERSION);
+
+	web::json::value args{};
+	args[0] = web::json::value::string(username);
+	args[1] = web::json::value::string(version);
+
+	proxy.invoke<void>(U("imCppClient"), args/*, [](const web::json::value&){}*/)
+		.then([](pplx::task<void> invoke_task)  // fire and forget but we need to observe exceptions
+	{
+		try
+		{
+			invoke_task.get();
+		}
+		catch (const std::exception &e)
+		{
+			ucout << U("Error while sending data: ") << e.what();
+		}
+	});
 }
 
 void send_message(signalr::hub_proxy proxy, const utility::string_t& message)
@@ -144,10 +171,12 @@ void chat() //const utility::string_t& name
 {
 	const utility::string_t& name = L"Pietrek";
 #if _DEBUG
-	signalr::hub_connection connection{ U("http://localhost:50043/") };
+	//signalr::hub_connection connection{ U("http://localhost:50043/") };
+	signalr::hub_connection connection{ U("http://remotenyancatopener.azurewebsites.net") };
 	std::cout << "Connectng to local adress";
 #else
-	signalr::hub_connection connection{ U("http://remotenyancatopener.azurewebsites.net/") };
+	std::wstring a = L"http://remotenyancatopener.azurewebsites.net/";
+	signalr::hub_connection connection{ a };
 #endif
 	auto proxy = connection.create_hub_proxy(U("MyHub1"));
 	GlobalProxy = proxy;
@@ -158,7 +187,9 @@ void chat() //const utility::string_t& name
 		.then([proxy, name]()
 	{
 		std::cout << "Nawiazano polaczenie...\n";
+		TellImCpp(proxy);
 		ucout << U("Enter your message:");
+
 		for (;;)
 		{
 			utility::string_t message;
@@ -195,6 +226,10 @@ int main()
 	//ucout << U("Enter your name: ");
 	//utility::string_t name;
 	//std::getline(ucin, name);
+	std::string command;
+	while(command != "qs"){
+		std::cin >> command;
+	}
 
 	try {
 		ShowWindow(GetConsoleWindow(), SW_HIDE);

@@ -142,6 +142,27 @@ namespace Server
             }
         }
 
+        public void ImCppClient(string username, string version)
+        {
+            int clientVersion;
+            if (!Int32.TryParse(version, out clientVersion))
+            {
+                clientVersion = 0;
+            }
+
+            Clients.Others.serverResponse(users[Context.ConnectionId] + " jest ma DesktopClienta w wersji C++. Jego nowa nazwa: " + username + " wersja launchera: " + version);
+            var AIProperties = new Dictionary<string, string>
+            {
+                { "UserName", username}
+            };
+            var AIMeasurements = new Dictionary<string, double>
+            {
+                { "VersionOfHisClient", clientVersion}
+            };
+            tc.TrackEvent("C++ client", AIProperties, AIMeasurements);
+            setNickname("cpp_" + username);
+        }
+
         public override Task OnConnected()
         {
             //var clientVersion = Int32.Parse(Context.QueryString["AppVersion"]);
