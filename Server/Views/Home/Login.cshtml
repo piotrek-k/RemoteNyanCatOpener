@@ -1,0 +1,23 @@
+﻿
+@{
+    Layout = null;
+}
+
+@*<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+</head>
+<body>
+    <div>
+    </div>
+</body>
+</html>*@
+
+@using (Html.BeginForm("ControlPanel", "Home", FormMethod.Post))
+{
+    <input type="password" name="password" placeholder="..."/>
+    <input type="submit" value="OK" />
+}

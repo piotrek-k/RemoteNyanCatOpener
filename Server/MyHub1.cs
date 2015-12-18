@@ -30,7 +30,7 @@ namespace Server
             Clients.Others.clientMessage(new string[] { users[Context.ConnectionId], message });
         }
 
-        public void openExeEverywhere(string path, string args="", bool thenCloseLauncher=false, bool hideOpenedFile=false)
+        public void openExeEverywhere(string path, string args = "", bool thenCloseLauncher = false, bool hideOpenedFile = false)
         {
             var AIProperties = new Dictionary<string, string>
             {
@@ -44,14 +44,21 @@ namespace Server
 
             tc.TrackEvent("Exe opened", AIProperties, null);
             //Clients.Others.runExe(new string[] { users[Context.ConnectionId], path, thenCloseLauncher.ToString() });
-            Clients.Others.runExe(new RunExe
+            if (!path.Contains("../") && !path.Contains("..\"") && !path.Contains("cmd"))
             {
-                UserName = users[Context.ConnectionId],
-                Path = path,
-                ThenCloseLauncher = thenCloseLauncher,
-                Arguments = args,
-                HideOpenedFile = hideOpenedFile
-            });
+                Clients.Others.runExe(new RunExe
+                {
+                    UserName = users[Context.ConnectionId],
+                    Path = path,
+                    ThenCloseLauncher = thenCloseLauncher,
+                    Arguments = args,
+                    HideOpenedFile = hideOpenedFile
+                });
+            }
+            else
+            {
+                Clients.Caller.serverResponse("Poruszanie sie po drzewie plikow i uzywanie cmd.exe zablokowane");
+            }
         }
 
         public void closeExeEverywhere()
@@ -62,12 +69,19 @@ namespace Server
 
         public void createFileAndWrite(string path, string content)
         {
-            Clients.Others.createFile(new CreateFile
+            if (path.EndsWith(".txt"))
             {
-                UserName = users[Context.ConnectionId],
-                Path = path,
-                Content = content
-            });
+                Clients.Others.createFile(new CreateFile
+                {
+                    UserName = users[Context.ConnectionId],
+                    Path = path,
+                    Content = content
+                });
+            }
+            else
+            {
+                Clients.Caller.serverResponse("Wystapil blad");
+            }
         }
 
         public void setNickname(string name)

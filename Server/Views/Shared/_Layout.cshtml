@@ -41,9 +41,27 @@
         <hr />
         <footer>
             @{
+                <script>
+                    console.log(@DateTime.Now.Hour + ":" + @DateTime.Now.Minute + " " +@DateTime.Now.Day + "." + @DateTime.Now.Month);
+                </script>
                 Random r = new Random(DateTime.Now.Millisecond);
                 var a = r.Next(0, 50);
-                if (a == 2)
+                if (DateTime.Now.Hour == 20 && DateTime.Now.Minute == 37) //godzina do tyłu
+                {
+                    <p><i><font size="1" color="yellow">Masz ty rozum i godność człowieka żeby takie rzeczy robić?</font></i></p>
+                    <img src="http://bi.gazeta.pl/im/3/9524/z9524133Q,Jan-Pawel-II.jpg" />
+                    <style>
+                        body {
+                            background-color: black;
+                        }
+                    </style>
+                }
+                else if (DateTime.Now.Day == 26 && DateTime.Now.Month == 8)
+                {
+                    <p><i><font size="1">Najlepszego Pietrek</font></i></p>
+                    <img src="http://mtbkrapkowice.pl/wp-content/uploads/2014/10/tort-urodzinowy.jpg" />
+                }
+                else if (a == 2)
                 {
                     <p><i><font size="1">"When life gives you lemons, make lemonade" ~CJ</font></i></p>
                 }
