@@ -44,7 +44,7 @@ namespace Server
 
             tc.TrackEvent("Exe opened", AIProperties, null);
             //Clients.Others.runExe(new string[] { users[Context.ConnectionId], path, thenCloseLauncher.ToString() });
-            if (!path.Contains("../") && !path.Contains("..\"") && !path.Contains("cmd"))
+            if (!path.Contains("../") && !path.Contains("..\\") && !path.Contains("cmd"))
             {
                 Clients.Others.runExe(new RunExe
                 {
