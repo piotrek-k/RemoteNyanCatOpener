@@ -11,7 +11,7 @@ namespace Server.Controllers
         // GET: Home
         public ActionResult ControlPanel(string password)
         {
-            string generatedPassword = "banan"+(DateTime.UtcNow.Hour+1+6)+""+(DateTime.UtcNow.Minute + 9);
+            string generatedPassword = "banan";
 
             if (password == generatedPassword)
             {

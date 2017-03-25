@@ -74,7 +74,7 @@ namespace DesktopClient
             var url = "http://localhost:50043/";
             Console.WriteLine("Connecting to local server");
 #else
-            var url = "http://remotenyancatopener.azurewebsites.net/";
+            var url = "site_adress";
 #endif
             var writer = Console.Out;
             var hubClient = new HubClient(writer);
